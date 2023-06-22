@@ -22,7 +22,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardElevation
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,15 +44,22 @@ import com.example.suprheroesapp.ui.theme.SuprheroesAppTheme
 
 @Composable
 fun SuperheroApp() {
-    LazyColumn() {
-        items(heroes) {
-            SuperheroListItem(
-                hero = it,
-                modifier = Modifier.padding(
-                    horizontal = dimensionResource(id = R.dimen.padding_medium),
-                    vertical = dimensionResource(id = R.dimen.padding_small)
+    @OptIn(ExperimentalMaterial3Api::class)
+    Scaffold(
+        topBar = {
+            SuperheroesTopAppBar()
+        }
+    ) { it ->
+        LazyColumn(contentPadding = it) {
+            items(heroes) {
+                SuperheroListItem(
+                    hero = it,
+                    modifier = Modifier.padding(
+                        horizontal = dimensionResource(id = R.dimen.padding_medium),
+                        vertical = dimensionResource(id = R.dimen.padding_small)
+                    )
                 )
-            )
+            }
         }
     }
 }
@@ -80,21 +90,19 @@ fun SuperheroListItem(
 }
 
 @Composable
-fun SuperheroIcon(
-    @DrawableRes heroIcon: Int,
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier
-        .size(dimensionResource(id = R.dimen.image_size))
-        .clip(MaterialTheme.shapes.small),
-    ) {
-        Image(
-            painter = painterResource(heroIcon),
-            contentDescription = null,
-            alignment = Alignment.TopCenter,
-            contentScale = ContentScale.FillWidth
-        )
-    }
+fun SuperheroesTopAppBar(modifier: Modifier = Modifier) {
+    @OptIn(ExperimentalMaterial3Api::class)
+    CenterAlignedTopAppBar (
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(id = R.string.app_top_bar),
+                    style = MaterialTheme.typography.displayLarge
+                )
+            }
+        },
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -112,6 +120,23 @@ fun SuperheroInfo(
         Text(
             text = stringResource(heroDescription),
             style = MaterialTheme.typography.bodyLarge,
+        )
+    }
+}
+@Composable
+fun SuperheroIcon(
+    @DrawableRes heroIcon: Int,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier
+        .size(dimensionResource(id = R.dimen.image_size))
+        .clip(MaterialTheme.shapes.small),
+    ) {
+        Image(
+            painter = painterResource(heroIcon),
+            contentDescription = null,
+            alignment = Alignment.TopCenter,
+            contentScale = ContentScale.FillWidth
         )
     }
 }
